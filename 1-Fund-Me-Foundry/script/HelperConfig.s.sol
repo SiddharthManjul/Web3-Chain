@@ -14,8 +14,18 @@ contract HelperConfig is Script {
     // If we are on a local anvil, we deploy mocks
     // Otherwise, grab the existing address from the live network
 
+    NetworkConfig public activeNetworkConfig;
+
     struct NetworkConfig {
         address priceFeed; // ETH/USD price feed addresses
+    }
+
+    constructor() {
+        if (block.chainid == 11155111) {
+            activeNetworkConfig = getSepoliaEthConfig();
+        } else {
+            activeNetworkConfig = getAnvilEthConfig();
+        }
     }
 
     function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
