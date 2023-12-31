@@ -1,9 +1,10 @@
 const { ethers } = require("ethers");
+require("dotenv").config();
 const provider = new ethers.providers.JsonRpcProvider(
   `https://eth-sepolia.g.alchemy.com/v2/UEWeBqCKv_CCuHyvSLNqi_ndoJ_xmIm6`
 );
 
-const walletAddress = "0xEE4A5d5ee49A3F32620C9564CF79f6438033c2B1";
+const walletAddress = process.env.SENT_WALLET_ADDRESS;
 const walletAbi = [
 	{
 		"inputs": [],
@@ -112,7 +113,7 @@ const contractInteraction = async() => {
 	const contractBalanceInEther = ethers.utils.formatEther(contractBalance);
 	console.log("Balance:", contractBalanceInEther);
 
-	const accountBalance = await walletContract.accountBalance("0x0146261BB9C5b21403a60D30e5271e1d172B27b9");
+	const accountBalance = await walletContract.accountBalance(process.env.WALLET_ADDRESS);
 	const balanceInEther = ethers.utils.formatEther(accountBalance);
 	console.log("User Balance:", balanceInEther);
 }
