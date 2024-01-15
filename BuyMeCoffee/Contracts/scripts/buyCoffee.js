@@ -5,19 +5,25 @@
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
 const hre = require("hardhat");
+require("@nomicfoundation/hardhat-ethers");
 
-async function getBalance(address) {
-  const balanceInBigInt = await hre.waffle.provider.getBalance(address);
-  return hre.ethers.utils.formatEther(balanceInBigInt);
+// Returns the ethers balance of a given address.
+async function balance(address) {
+  const balanceBigInt = await hre.ethers.provider.getBalance(address);
+  console.log(balanceBigInt);
+  return hre.ethers.formatEther(balanceBigInt);
 }
 
+// Logs the ethers balance for a list of addresses.
 async function printBalances(addresses) {
   let idx = 0;
   for (const address of addresses) {
-    console.log(`Address &{idx} balance: `, await getBalance(address));
+    console.log("Address " + address + " balance" + await balance(address));
+    idx++;
   }
 }
 
+// Logs the memos stored on-chain from coffee purchases.
 const printMemos = async(memos) => {
   for (const memo of memos) {
     const timestamp = memo.timestamp;
@@ -29,22 +35,32 @@ const printMemos = async(memos) => {
 }
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  
+  // Get example accounts.
+  const [owner, tipper1, tipper2, tipper3] = await hre.ethers.getSigners();
 
-  const lockedAmount = hre.ethers.parseEther("0.001");
+  // Get the contrract to deploy.
+  const BuyMeCoffee = await hre.ethers.getContractFactory("BuyMeCoffee");
 
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  // Deploy Contract.
+  const buyMeCoffee = await BuyMeCoffee.deploy();
+  await buyMeCoffee.waitForDeployment();
+  console.log("BuyMeCoffee deployed to: ", buyMeCoffee.address);
 
-  await lock.waitForDeployment();
+  // Check balances before the coffee purchase.
+  const addresses = [owner.address, tipper1.address, buyMeCoffee.address]
+  console.log("===start===");
+  await printBalances(addresses);
 
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
+  // Buy the owner a coffee
+
+  // Check balances after coffee purchases.
+
+  // Withdraw funds.
+
+  // Check balance after withdraw
+
+  // Read all the memos left for the owner
 }
 
 // We recommend this pattern to be able to use async/await everywhere
