@@ -6,6 +6,28 @@
 // global scope, and execute the script.
 const hre = require("hardhat");
 
+async function getBalance(address) {
+  const balanceInBigInt = await hre.waffle.provider.getBalance(address);
+  return hre.ethers.utils.formatEther(balanceInBigInt);
+}
+
+async function printBalances(addresses) {
+  let idx = 0;
+  for (const address of addresses) {
+    console.log(`Address &{idx} balance: `, await getBalance(address));
+  }
+}
+
+const printMemos = async(memos) => {
+  for (const memo of memos) {
+    const timestamp = memo.timestamp;
+    const tipper = memo.name;
+    const tipperAddress = memo.address;
+    const tipperMessage = memo.message;
+    console.log(`At &{timestamp}, &{tipper} (address: &{tipperAddress}) said: &{tipperMessage}`);
+  }
+}
+
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
   const unlockTime = currentTimestampInSeconds + 60;
