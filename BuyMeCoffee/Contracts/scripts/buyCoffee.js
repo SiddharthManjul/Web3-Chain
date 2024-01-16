@@ -8,49 +8,50 @@ const hre = require("hardhat");
 require("@nomicfoundation/hardhat-ethers");
 
 // Returns the ethers balance of a given address.
-async function balance(address) {
-  const balanceBigInt = await hre.ethers.provider.getBalance(address);
-  console.log(balanceBigInt);
-  return hre.ethers.formatEther(balanceBigInt);
-}
+// async function balance(address) {
+//   const balanceBigInt = await hre.ethers.provider.getBalance(address);
+//   console.log(balanceBigInt);
+//   return hre.ethers.formatEther(balanceBigInt);
+// }
 
 // Logs the ethers balance for a list of addresses.
-async function printBalances(addresses) {
-  let idx = 0;
-  for (const address of addresses) {
-    console.log("Address " + address + " balance" + await balance(address));
-    idx++;
-  }
-}
+// async function printBalances(addresses) {
+//   let idx = 0;
+//   for (const address of addresses) {
+//     console.log("Address " + address + " balance" + await balance(address));
+//     idx++;
+//   }
+// }
 
 // Logs the memos stored on-chain from coffee purchases.
-const printMemos = async(memos) => {
-  for (const memo of memos) {
-    const timestamp = memo.timestamp;
-    const tipper = memo.name;
-    const tipperAddress = memo.address;
-    const tipperMessage = memo.message;
-    console.log(`At &{timestamp}, &{tipper} (address: &{tipperAddress}) said: &{tipperMessage}`);
-  }
-}
+// const printMemos = async(memos) => {
+//   for (const memo of memos) {
+//     const timestamp = memo.timestamp;
+//     const tipper = memo.name;
+//     const tipperAddress = memo.address;
+//     const tipperMessage = memo.message;
+//     console.log(`At &{timestamp}, &{tipper} (address: &{tipperAddress}) said: &{tipperMessage}`);
+//   }
+// }
 
 async function main() {
   
   // Get example accounts.
   const [owner, tipper1, tipper2, tipper3] = await hre.ethers.getSigners();
+  console.log(`Deploying Contract to ${owner.address}`);
 
   // Get the contrract to deploy.
   const BuyMeCoffee = await hre.ethers.getContractFactory("BuyMeCoffee");
 
   // Deploy Contract.
-  const buyMeCoffee = await BuyMeCoffee.deploy();
+  const buyMeCoffee = await hre.ethers.deployContract("BuyMeCoffee", BuyMeCoffee);
   await buyMeCoffee.waitForDeployment();
-  console.log("BuyMeCoffee deployed to: ", buyMeCoffee.address);
+  console.log("BuyMeCoffee deployed to: ", buyMeCoffee.target);
 
-  // Check balances before the coffee purchase.
-  const addresses = [owner.address, tipper1.address, buyMeCoffee.address]
-  console.log("===start===");
-  await printBalances(addresses);
+  // // Check balances before the coffee purchase.
+  // const addresses = [owner.address, tipper1.address, buyMeCoffee.address]
+  // console.log("===start===");
+  // await printBalances(addresses);
 
   // Buy the owner a coffee
 
