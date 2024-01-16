@@ -29,7 +29,7 @@ const printMemos = async(memos) => {
   for (const memo of memos) {
     const timestamp = memo.timestamp;
     const tipper = memo.name;
-    const tipperAddress = memo.address;
+    const tipperAddress = memo.from;
     const tipperMessage = memo.message;
     console.log(`At ${timestamp}, ${tipper} (address: ${tipperAddress}) said: ${tipperMessage}`);
   }
@@ -40,6 +40,10 @@ async function main() {
   // Get example accounts.
   const [owner, tipper1, tipper2, tipper3] = await hre.ethers.getSigners();
   console.log(`Deploying Contract to ${owner.address}`);
+  // console.log(`Deploying Contract to ${tipper1.address}`);
+  // console.log(`Deploying Contract to ${tipper2.address}`);
+  // console.log(`Deploying Contract to ${tipper3.address}`);
+  
 
   // Get the contrract to deploy.
   const BuyMeCoffee = await hre.ethers.getContractFactory("BuyMeCoffee");

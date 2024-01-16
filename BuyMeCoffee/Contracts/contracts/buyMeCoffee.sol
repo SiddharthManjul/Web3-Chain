@@ -33,6 +33,15 @@ contract BuyMeCoffee {
         // When we withdraw funds, we'll withdraw here.
         owner = payable(msg.sender);
     }
+
+    /**
+     * @dev retrieve all the memos recieved and stored on the blockchan!
+     */
+
+    function getMemos() public view returns(Memo[] memory) {
+        return memos;
+    }
+    
     /**
      * @dev buy me a coffee
      * @param _name of the coffee buyer
@@ -67,11 +76,5 @@ contract BuyMeCoffee {
             require(owner.send(address(this).balance));
     }
 
-    /**
-     * @dev retrieve all the memos recieved and stored on the blockchan!
-     */
-
-    function getMemos() public view returns(Memo[] memory) {
-        return memos;
-    }
+    
 } 
