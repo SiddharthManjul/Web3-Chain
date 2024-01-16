@@ -4,6 +4,8 @@
 // You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
+
+
 const hre = require("hardhat");
 require("@nomicfoundation/hardhat-ethers");
 
@@ -23,15 +25,15 @@ async function printBalances(addresses) {
 }
 
 // Logs the memos stored on-chain from coffee purchases.
-// const printMemos = async(memos) => {
-//   for (const memo of memos) {
-//     const timestamp = memo.timestamp;
-//     const tipper = memo.name;
-//     const tipperAddress = memo.address;
-//     const tipperMessage = memo.message;
-//     console.log(`At &{timestamp}, &{tipper} (address: &{tipperAddress}) said: &{tipperMessage}`);
-//   }
-// }
+const printMemos = async(memos) => {
+  for (const memo of memos) {
+    const timestamp = memo.timestamp;
+    const tipper = memo.name;
+    const tipperAddress = memo.address;
+    const tipperMessage = memo.message;
+    console.log(`At ${timestamp}, ${tipper} (address: ${tipperAddress}) said: ${tipperMessage}`);
+  }
+}
 
 async function main() {
   
@@ -48,19 +50,31 @@ async function main() {
   console.log("BuyMeCoffee deployed to: ", buyMeCoffee.target);
 
   // Check balances before the coffee purchase.
-  const addresses = [owner.address, tipper1.address, buyMeCoffee.target]
-  console.log("===start===");
+  const addresses = [owner.address, tipper1.address, tipper2.address, tipper3.address, buyMeCoffee.target]
+  console.log("===Start===");
   await printBalances(addresses);
 
   // Buy the owner a coffee
+  const tip = {value: hre.ethers.parseEther("1")};
+  await buyMeCoffee.connect(tipper1).buyCoffee("Brroklyn", "Web3 is best!", tip);
+  await buyMeCoffee.connect(tipper2).buyCoffee("Siddharth", "I'm learning it extensively!", tip);
+  await buyMeCoffee.connect(tipper3).buyCoffee("Dynamis", "Let's BUIDL!", tip);
 
   // Check balances after coffee purchases.
+  console.log("===Bought Coffee===");
+  await printBalances(addresses);
 
   // Withdraw funds.
+  await buyMeCoffee.connect(owner).withdrawTips();
 
   // Check balance after withdraw
+  console.log("===Withdraw Tips===");
+  await printBalances(addresses);
 
   // Read all the memos left for the owner
+  console.log("===Memos===");
+  const memos = await buyMeCoffee.getMemos();
+  printMemos(memos);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
