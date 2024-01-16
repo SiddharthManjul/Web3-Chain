@@ -8,20 +8,19 @@ const hre = require("hardhat");
 require("@nomicfoundation/hardhat-ethers");
 
 // Returns the ethers balance of a given address.
-// async function balance(address) {
-//   const balanceBigInt = await hre.ethers.provider.getBalance(address);
-//   console.log(balanceBigInt);
-//   return hre.ethers.formatEther(balanceBigInt);
-// }
+async function balance(address) {
+  const balanceBigInt = await hre.ethers.provider.getBalance(address);
+  return ethers.formatEther(balanceBigInt);
+}
 
 // Logs the ethers balance for a list of addresses.
-// async function printBalances(addresses) {
-//   let idx = 0;
-//   for (const address of addresses) {
-//     console.log("Address " + address + " balance" + await balance(address));
-//     idx++;
-//   }
-// }
+async function printBalances(addresses) {
+  let idx = 0;
+  for (const address of addresses) {
+    console.log(`Address ${idx} balance is: `, await balance(address));
+    idx++;
+  }
+}
 
 // Logs the memos stored on-chain from coffee purchases.
 // const printMemos = async(memos) => {
@@ -48,10 +47,10 @@ async function main() {
   await buyMeCoffee.waitForDeployment();
   console.log("BuyMeCoffee deployed to: ", buyMeCoffee.target);
 
-  // // Check balances before the coffee purchase.
-  // const addresses = [owner.address, tipper1.address, buyMeCoffee.address]
-  // console.log("===start===");
-  // await printBalances(addresses);
+  // Check balances before the coffee purchase.
+  const addresses = [owner.address, tipper1.address, buyMeCoffee.target]
+  console.log("===start===");
+  await printBalances(addresses);
 
   // Buy the owner a coffee
 
