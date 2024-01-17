@@ -44,7 +44,6 @@ async function main() {
   // console.log(`Deploying Contract to ${tipper2.address}`);
   // console.log(`Deploying Contract to ${tipper3.address}`);
   
-
   // Get the contrract to deploy.
   const BuyMeCoffee = await hre.ethers.getContractFactory("BuyMeCoffee");
 
